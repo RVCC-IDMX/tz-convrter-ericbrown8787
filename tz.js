@@ -3,18 +3,30 @@ const yargs = require('yargs');
 
 moment.tz.setDefault('America/New_York');
 
-const targetTimezone = yargs.argv._[0];
+const command = yargs.argv._[0];
 const params = yargs.argv;
 const validTimezones = moment.tz.names();
+const countries = moment.tz.countries();
 
-if (!targetTimezone) {
-  console.log('Usage: node < script - file > <timezone>');
-  process.exit(1);
-} else if (validTimezones.includes(targetTimezone) === false) {
-  console.log('Please enter a valid time zone');
+if (!command) {
+  if (params.all) { // For extra credit(display all time zones)
+    console.table(validTimezones);
+  } else if (params.country) { // For extra credit(display time zones for specified country code)
+    if (countries.includes(params.country.toUpperCase())) {
+      console.table(moment.tz.zonesForCountry(params.country));
+    } else {
+      console.log('Usage: node tz [--country] <country code>');
+      process.exit(3);
+    }
+  } else {
+    console.log('Usage: node tz <timezone> [--format]');
+    process.exit(1);
+  }
+} else if (validTimezones.includes(command) === false) { // For extra credit(Error checking)
+  console.log('Usage: node tz <timezone> [--format]');
   process.exit(2);
 } else {
-  const time = moment().tz(targetTimezone);
+  const time = moment().tz(command);
   let formattedTime;
 
   // Checking for format flag
@@ -24,5 +36,5 @@ if (!targetTimezone) {
     formattedTime = time.format();
   }
 
-  console.log(`The time at ${targetTimezone} is ${formattedTime}`);
+  console.log(`The time at ${command} is ${formattedTime}`);
 }
