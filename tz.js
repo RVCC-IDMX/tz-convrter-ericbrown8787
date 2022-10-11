@@ -1,12 +1,21 @@
 const moment = require('moment-timezone');
+const yargs = require('yargs');
 
 moment.tz.setDefault('America/New_York');
 
-let targetTimezone;
-if (process.argv.length !== 3) {
+const targetTimezone = yargs.argv._[0];
+const params = yargs.argv;
+
+if (!yargs.argv._[0]) {
   console.log('Usage: node < script - file > <timezone>');
   process.exit(1);
 } else {
-  targetTimezone = process.argv.at(2);
+  const time = moment().tz(targetTimezone);
+  let formattedTime;
+  if (params.format) {
+    formattedTime = time.format('dddd, MMMM Do YYYY, h:mm:ss a');
+  } else {
+    formattedTime = time.format();
+  }
+  console.log(`The time at ${targetTimezone} is ${formattedTime}`);
 }
-console.log(`The time at ${targetTimezone} is ${moment().tz(targetTimezone).format()}`);
