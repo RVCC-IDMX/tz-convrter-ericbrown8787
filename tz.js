@@ -7,14 +7,16 @@ const command = yargs.argv._[0];
 const params = yargs.argv;
 const validTimezones = moment.tz.names();
 const countries = moment.tz.countries();
-
 if (!command) {
+  // Checking for all flag
   if (params.all) { // For extra credit(display all time zones)
     console.table(validTimezones);
+    // checking for country flag
   } else if (params.country) { // For extra credit(display time zones for specified country code)
     if (countries.includes(params.country.toUpperCase())) {
       console.table(moment.tz.zonesForCountry(params.country));
     } else {
+      // Error handling for invalid country code
       console.log('Usage: node tz [--country] <country code>');
       process.exit(3);
     }
